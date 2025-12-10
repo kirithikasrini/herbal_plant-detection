@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 Plant Identification Result | Herbal Scape</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),
+            url("{{ url_for('static', filename='images/background.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-wrapper" style="padding-top: 2rem;">
+
+        <div class="text-center mb-5">
+            <div class="app-branding justify-content-center">
+                <div class="app-icon" style="font-size: 3rem;">🌿</div>
+                <div class="app-title" style="font-size: 2.5rem; color:white; -webkit-text-fill-color: white;">Herbal
+                    Scape</div>
+            </div>
+            <h1 class="text-white fw-bold">Identification Result</h1>
+        </div>
+
+        <div class="row">
+            <!-- Uploaded Image Card -->
+            <div class="col-md-4 mb-4">
+                <div class="plant-card h-100">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h4 class="h5 mb-0 text-center"><i class="fas fa-image me-2"></i>Uploaded Image</h4>
+                    </div>
+                    <div class="card-body d-flex align-items-center justify-content-center bg-light">
+                        <img src="{{ url_for('static', filename=image_path) }}" alt="Uploaded plant"
+                            style="max-height: 400px; width: 100%; object-fit: contain; border-radius: 8px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plant Information Cards -->
+            <div class="col-md-8">
+                {% if plant_name %}
+                <!-- Plant Name and Scientific Name Card -->
+                <div class="card mb-4 shadow-sm border-0" style="border-radius: 15px; overflow:hidden;">
+                    <div class="card-header bg-success text-white py-3 px-4">
+                        <h2 class="h3 mb-0 fw-bold">{{ plant_name }}</h2>
+                        <p class="mb-0 opacity-75"><em>{{ scientific_name or 'N/A' }}</em></p>
+                    </div>
+                </div>
+
+                <!-- Common Names -->
+                {% if common_names %}
+                <div class="card mb-4 shadow-sm border-0" style="border-radius: 12px;">
+                    <div class="card-body">
+                        <h5 class="text-success mb-3"><i class="fas fa-tags me-2"></i>Common Names</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for name in common_names %}
+                            <span class="badge rounded-pill bg-light text-dark border">{{ name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Details Grid -->
+                <div class="row g-4">
+                    {% if medicinal_properties %}
+                    <div class="col-12">
+                        <div class="card h-100 border-0 shadow-sm" style="border-left: 5px solid #4CAF50;">
+                            <div class="card-body">
+                                <h5 class="text-success fw-bold mb-3"><i class="fas fa-notes-medical me-2"></i>Medicinal
+                                    Properties</h5>
+                                <p class="text-muted mb-0">{{ medicinal_properties }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if growing_conditions %}
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm" style="border-left: 5px solid #2E7D32;">
+                            <div class="card-body">
+                                <h5 class="text-success fw-bold mb-3"><i class="fas fa-seedling me-2"></i>Growing
+                                    Conditions</h5>
+                                <p class="text-muted mb-0">{{ growing_conditions }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if harvesting_guidelines %}
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm" style="border-left: 5px solid #8BC34A;">
+                            <div class="card-body">
+                                <h5 class="text-success fw-bold mb-3"><i class="fas fa-sickle me-2"></i>Harvesting</h5>
+                                <p class="text-muted mb-0">{{ harvesting_guidelines }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if precautions %}
+                    <div class="col-12">
+                        <div class="card h-100 border-0 shadow-sm" style="border-left: 5px solid #ff9800;">
+                            <div class="card-body">
+                                <h5 class="text-warning fw-bold mb-3"><i
+                                        class="fas fa-exclamation-triangle me-2"></i>Precautions</h5>
+                                <p class="text-muted mb-0">{{ precautions }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% else %}
+                <div class="alert alert-warning shadow-sm border-0">
+                    <h4 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>No Match Found</h4>
+                    <p>We couldn't identify the plant in the uploaded image. Please try again with a clearer image or a
+                        different angle.</p>
+                </div>
+                {% endif %}
+
+                <div class="text-center mt-5 mb-5">
+                    <a href="{{ url_for('home') }}" class="btn btn-secondary rounded-pill px-4 py-2 me-3 fw-bold">
+                        <i class="fas fa-home me-2"></i> Back to Home
+                    </a>
+                    <a href="{{ url_for('upload_file') }}" class="btn btn-primary rounded-pill px-4 py-2 fw-bold"
+                        style="background: var(--primary); border: none;">
+                        <i class="fas fa-camera me-2"></i> Check Another Plant
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
