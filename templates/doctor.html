@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👨‍⚕️ Ayurvedic Doctor | Herbal Scape</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    {% include 'styles.html' %}
+    <style>
+        body {
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+            url("{{ url_for('static', filename='images/background.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .doctor-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: white;
+            overflow: hidden;
+        }
+
+        .doctor-header {
+            background: linear-gradient(135deg, #2E7D32, #1A5D1A);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .symptom-btn {
+            transition: all 0.3s ease;
+            border: 2px solid #e0e0e0;
+            background: white;
+            color: #555;
+            font-weight: 500;
+            padding: 1rem;
+            border-radius: 15px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .symptom-btn:hover {
+            border-color: #2E7D32;
+            color: #2E7D32;
+            background: #f1f8e9;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+        }
+
+        .symptom-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .chat-bubble {
+            background: #f1f8e9;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 5px solid #2E7D32;
+            display: none;
+            /* Hidden by default */
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Global Navbar -->
+    {% include 'navbar.html' %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="doctor-card">
+                    <div class="doctor-header">
+                        <div class="mb-3">
+                            <span class="bg-white text-success rounded-circle p-3 d-inline-block shadow-sm">
+                                <i class="fas fa-user-md fa-2x"></i>
+                            </span>
+                        </div>
+                        <h2 class="fw-bold mb-1">Ayurvedic Specialist</h2>
+                        <p class="opacity-75 mb-0">
+                            {% if mode == 'specific' %}
+                            Consultation for <strong>{{ plant_name }}</strong>
+                            {% else %}
+                            <strong>General Consultation</strong> - Select a symptom to find remedies
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <h5 class="text-center text-muted mb-4">Select a symptom to check effectiveness:</h5>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-4 col-sm-3">
+                                <button onclick="checkSymptom('cold')" class="btn symptom-btn w-100">
+                                    <i class="fas fa-snowflake symptom-icon text-info"></i>
+                                    <span>Cold</span>
+                                </button>
+                            </div>
+                            <div class="col-4 col-sm-3">
+                                <button onclick="checkSymptom('stomach')" class="btn symptom-btn w-100">
+                                    <i class="fas fa-utensils symptom-icon text-warning"></i>
+                                    <span>Digestion</span>
+                                </button>
+                            </div>
+                            <div class="col-4 col-sm-3">
+                                <button onclick="checkSymptom('skin')" class="btn symptom-btn w-100">
+                                    <i class="fas fa-hand-sparkles symptom-icon text-danger"></i>
+                                    <span>Skin</span>
+                                </button>
+                            </div>
+                            <div class="col-4 col-sm-3">
+                                <button onclick="checkSymptom('headache')" class="btn symptom-btn w-100">
+                                    <i class="fas fa-brain symptom-icon text-secondary"></i>
+                                    <span>Headache</span>
+                                </button>
+                            </div>
+                            <!-- Add more as needed -->
+                            <div class="col-4 col-sm-3">
+                                <button onclick="checkSymptom('immunity')" class="btn symptom-btn w-100">
+                                    <i class="fas fa-shield-alt symptom-icon text-success"></i>
+                                    <span>Immunity</span>
+                                </button>
+                            </div>
+                            <div class="col-4 col-sm-3">
+                                <button onclick="checkSymptom('pain')" class="btn symptom-btn w-100">
+                                    <i class="fas fa-notes-medical symptom-icon text-danger"></i>
+                                    <span>Pain</span>
+                                </button>
+                            </div>
+                            <div class="col-4 col-sm-3">
+                                <button onclick="checkSymptom('stress')" class="btn symptom-btn w-100">
+                                    <i class="fas fa-wind symptom-icon text-primary"></i>
+                                    <span>Stress</span>
+                                </button>
+                            </div>
+                            <div class="col-4 col-sm-3">
+                                <button onclick="checkSymptom('diabetes')" class="btn symptom-btn w-100">
+                                    <i class="fas fa-tint symptom-icon text-danger"></i>
+                                    <span>Sugar</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Doctor's Response Area -->
+                        <div id="doctor-response" class="chat-bubble">
+                            <h5 class="text-success fw-bold mb-2" id="response-title"></h5>
+                            <div id="response-content"></div>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary rounded-pill px-4">
+                                <i class="fas fa-home me-2"></i>Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mode = "{{ mode }}";
+        // Data for Specific Mode
+        const specificPlantName = {{ plant_name | tojson }} || "Unknown Plant";
+        const specificProperties = ({{ medicinal_properties | tojson }} || "").toLowerCase();
+
+        // Data for General Mode (List of objects)
+        const allPlants = {{ all_plants | tojson }} || [];
+
+        function checkSymptom(symptom) {
+            const responseBox = document.getElementById('doctor-response');
+            const titleElem = document.getElementById('response-title');
+            const contentElem = document.getElementById('response-content');
+
+            // Expert System Logic Map
+            const keywords = {
+                'cold': ['cold', 'cough', 'respiratory', 'throat', 'flu', 'fever', 'mucus', 'congestion'],
+                'stomach': ['digestion', 'stomach', 'gut', 'abdominal', 'appetite', 'gastric', 'acid', 'bowel'],
+                'skin': ['skin', 'wound', 'cut', 'burn', 'antiseptic', 'rash', 'acne', 'glow'],
+                'headache': ['headache', 'migraine', 'head', 'neural'],
+                'immunity': ['immunity', 'immune', 'strength', 'vitality', 'booster', 'detox'],
+                'pain': ['pain', 'ache', 'joint', 'arthritis', 'inflammation', 'swelling'],
+                'stress': ['stress', 'anxiety', 'calm', 'sleep', 'relax', 'nervous', 'depression'],
+                'diabetes': ['diabetes', 'sugar', 'blood sugar', 'insulin', 'glucose']
+            };
+
+            const targetKeywords = keywords[symptom] || [];
+
+            // Show response box
+            responseBox.style.display = 'none';
+            responseBox.offsetHeight; /* trigger reflow */
+            responseBox.style.display = 'block';
+
+            if (mode === 'specific') {
+                // --- SPECIFIC MODE LOGIC ---
+                const isEffective = targetKeywords.some(keyword => specificProperties.includes(keyword));
+
+                if (isEffective) {
+                    titleElem.innerHTML = `<i class="fas fa-check-circle me-2"></i>Recommended`;
+                    titleElem.style.color = '#2E7D32';
+                    responseBox.style.borderLeftColor = '#2E7D32';
+                    responseBox.style.background = '#e8f5e9';
+                    contentElem.innerHTML = `<p class="mb-0 text-dark">Yes, <strong>${specificPlantName}</strong> is considered effective for <strong>${symptom}</strong>. <br><br>Properties found: <em>"${specificProperties.substring(0, 150)}..."</em></p>`;
+                } else {
+                    titleElem.innerHTML = `<i class="fas fa-info-circle me-2"></i>Not Specific`;
+                    titleElem.style.color = '#f57c00';
+                    responseBox.style.borderLeftColor = '#f57c00';
+                    responseBox.style.background = '#fff3e0';
+                    contentElem.innerHTML = `<p class="mb-0 text-dark"><strong>${specificPlantName}</strong> is not traditionally the primary cure for <strong>${symptom}</strong> in our records.<br><br>It is mainly used for: <strong>${specificProperties.substring(0, 100)}...</strong></p>`;
+                }
+
+            } else {
+                // --- GENERAL MODE LOGIC ---
+                const recommendedPlants = allPlants.filter(plant => {
+                    const props = (plant.medicinal_properties || "").toLowerCase();
+                    return targetKeywords.some(keyword => props.includes(keyword));
+                });
+
+                if (recommendedPlants.length > 0) {
+                    titleElem.innerHTML = `<i class="fas fa-leaf me-2"></i>Plants for ${symptom.charAt(0).toUpperCase() + symptom.slice(1)}`;
+                    titleElem.style.color = '#2E7D32';
+                    responseBox.style.borderLeftColor = '#2E7D32';
+                    responseBox.style.background = '#e8f5e9';
+
+                    let htmlList = '<ul class="list-group list-group-flush bg-transparent">';
+                    recommendedPlants.forEach(plant => {
+                        // Find the relevant property snippet for display
+                        const props = (plant.medicinal_properties || "").toLowerCase();
+                        // Simple highlight logic
+                        // We just show a small snippet or the full property if short
+                        let snippet = plant.medicinal_properties.substring(0, 80) + "...";
+
+                        htmlList += `
+                            <li class="list-group-item bg-transparent border-0 ps-0">
+                                <strong class="text-success">${plant.name}</strong> 
+                                <span class="d-none d-sm-inline text-muted">(${plant.scientific_name || plant.name})</span>
+                                <div class="small text-dark mt-1"><em>${snippet}</em></div>
+                            </li>`;
+                    });
+                    htmlList += '</ul>';
+                    contentElem.innerHTML = htmlList;
+
+                } else {
+                    titleElem.innerHTML = `<i class="fas fa-search me-2"></i>No Matches Found`;
+                    titleElem.style.color = '#757575';
+                    responseBox.style.borderLeftColor = '#9e9e9e';
+                    responseBox.style.background = '#f5f5f5';
+                    contentElem.innerHTML = `<p class="mb-0 text-dark">Sorry, we couldn't find any plants in our database specifically for <strong>${symptom}</strong>.</p>`;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

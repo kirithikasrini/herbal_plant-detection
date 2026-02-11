@@ -12,7 +12,7 @@
   <script src="https://kit.fontawesome.com/a2d9d7f6b7.js" crossorigin="anonymous"></script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% include 'styles.html' %}
   <style>
     /* Keeping this inline as it uses Flask's url_for which can't be in external CSS easily without workarounds */
     body {
@@ -23,67 +23,138 @@
 </head>
 
 <body>
-  <div class="main-wrapper">
-    <div class="cards-row">
+  {% include 'navbar.html' %}
+
+  <div class="main-wrapper container py-5">
+    <div class="row align-items-center justify-content-center gy-5">
       <!-- LEFT upload card -->
-      <div class="card-left">
-        <div class="app-branding">
-          <div class="app-icon">🌿</div>
-          <div class="app-title">Herbal Scape</div>
-        </div>
-        <p class="app-tagline">Identify medicinal plants with artificial intelligence</p>
-
-        <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
-          <label for="file" class="custom-file-upload" id="fileLabel">
-            <i class="fa-solid fa-camera"></i>
-            <div class="upload-text">Click to upload plant image</div>
-            <div class="file-name" id="fileName">No file selected</div>
-          </label>
-          <input type="file" id="file" name="file" accept="image/*" required>
-
-          <div class="upload-btn-container">
-            <button type="submit" class="btn btn-upload" id="submitBtn">Identify Plant</button>
+      <div class="col-lg-5 col-md-6">
+        <div class="card-left h-100 p-4"
+          style="background: rgba(255, 255, 255, 0.9); border-radius: 24px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,0.5);">
+          <div class="app-branding text-center mb-4">
+            <h1 class="app-title display-6 fw-bold" style="color: #1A5D1A;">Herbal Scape</h1>
+            <p class="app-tagline text-muted lead fs-6">Identify medicinal plants instantly with AI.</p>
           </div>
-        </form>
+
+          <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
+            <label for="file"
+              class="custom-file-upload w-100 d-flex flex-column align-items-center justify-content-center p-5 mb-4 text-center cursor-pointer"
+              id="fileLabel"
+              style="border: 2px dashed #a5d6a7; border-radius: 20px; background: #fcfdfc; transition: all 0.3s ease;">
+              <i class="fa-solid fa-cloud-arrow-up text-success display-4 mb-3"></i>
+              <div class="upload-text fw-bold fs-5 text-success">Click to Upload Image</div>
+              <div class="file-name text-muted small mt-2" id="fileName">No file selected</div>
+            </label>
+            <input type="file" id="file" name="file" accept="image/*" required style="display: none;">
+
+            <div class="upload-btn-container">
+              <button type="submit" class="btn btn-success w-100 py-3 rounded-pill fw-bold shadow-sm" id="submitBtn"
+                style="background: linear-gradient(135deg, #1A5D1A, #2E7D32); border: none; font-size: 1.1rem;">
+                <i class="fas fa-search me-2"></i> Identify Plant
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
 
-      <!-- Webcam Capture Section -->
-      <div class="card mb-4 webcam-card">
-        <div class="card-header webcam-header">
-          <i class="fas fa-camera me-2"></i> Webcam Capture
-        </div>
-        <div class="card-body text-center p-4">
-          <div id="webcam-container" class="webcam-wrapper">
-            <div class="video-container">
-              <video id="webcam" autoplay playsinline></video>
-              <canvas id="canvas" style="display: none;"></canvas>
+      <!-- RIGHT Webcam and Features -->
+      <div class="col-lg-6 col-md-6">
+        <!-- Webcam Capture Section -->
+        <div class="card webcam-card border-0 h-100" style="background: transparent; box-shadow: none;">
+          <div class="card-body p-0">
+            <!-- Initial State: Call to Action Card -->
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="background: white;">
+              <div class="card-body p-4 text-center">
+                <div class="mb-4">
+                  <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle"
+                    style="width: 80px; height: 80px;">
+                    <i class="fas fa-camera text-success display-6"></i>
+                  </div>
+                </div>
+                <h4 class="fw-bold mb-3" style="color: #1A5D1A;">Use Camera</h4>
+                <p class="text-muted mb-4">Take a photo of a plant directly using your device's camera for instant
+                  identification.</p>
+
+                <div id="start-buttons">
+                  <button id="start-webcam" class="btn btn-outline-success px-4 py-2 rounded-pill fw-bold border-2">
+                    <i class="fas fa-video me-2"></i> Open Camera
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div id="capture-buttons" style="display: none;">
-            <button id="capture-btn" class="btn btn-capture me-2">
-              <i class="fas fa-camera me-2"></i>Capture Image
-            </button>
-            <button id="retake-btn" class="btn btn-retake">
-              <i class="fas fa-redo me-2"></i>Retake
-            </button>
-          </div>
-
-          <div id="start-buttons">
-            <button id="start-webcam" class="btn btn-start-webcam">
-              <i class="fas fa-video me-2"></i>Start Webcam
-            </button>
-            <p class="text-muted mt-2 mb-0">Or upload an image in the left panel</p>
+            <!-- Active Webcam State (Hidden initially) -->
+            <div id="webcam-container" class="webcam-wrapper mt-3" style="display: none;">
+              <div class="card border-0 shadow rounded-4 overflow-hidden">
+                <div class="card-header bg-success text-white py-3 border-0">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <span class="fw-bold"><i class="fas fa-eye me-2"></i>Live View</span>
+                    <span class="badge bg-white text-success pulse-badge">● Live</span>
+                  </div>
+                </div>
+                <div class="card-body p-0 bg-black">
+                  <div class="video-container position-relative" style="aspect-ratio: 4/3; background: #000;">
+                    <video id="webcam" autoplay playsinline
+                      style="width: 100%; height: 100%; object-fit: cover;"></video>
+                    <canvas id="canvas" style="display: none; width: 100%; height: 100%; object-fit: cover;"></canvas>
+                  </div>
+                </div>
+                <div class="card-footer bg-white border-0 p-3 pt-0">
+                  <div id="capture-buttons" class="d-flex justify-content-center gap-2 mt-3" style="display: none;">
+                    <button id="capture-btn" class="btn btn-success rounded-pill px-4 fw-bold">
+                      <i class="fas fa-camera me-2"></i> Capture
+                    </button>
+                    <button id="retake-btn" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                      <i class="fas fa-undo me-2"></i> Retake
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Features Showcase -->
+    <div id="features" class="features-section">
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-3 col-6">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-camera"></i></div>
+            <h5 class="fw-bold">Instant ID</h5>
+            <p class="small text-muted mb-0">99% accurate identification</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-user-md"></i></div>
+            <h5 class="fw-bold">Ayurvedic Doctor</h5>
+            <p class="small text-muted mb-0">Symptom-based remedies</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-comments"></i></div>
+            <h5 class="fw-bold">AI Chatbot</h5>
+            <p class="small text-muted mb-0">Ask questions to plants</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+            <h5 class="fw-bold">Digital Garden</h5>
+            <p class="small text-muted mb-0">Track your collection</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Season selector + default sample plants (pure HTML + JS) -->
     <div class="season-widget"
       style="max-width:1100px; margin:2rem auto; padding:2rem; background:#fff; border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,0.06);">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+      <div id="seasonSelectorWrapper"
+        style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
         <div>
           <h2 style="margin:0; color:#1A5D1A; font-size:1.9rem;">🌿 Plants in Season</h2>
           <p style="margin:0.25rem 0 0; color:#6b6b6b;">Choose a season to see example plants and care tips</p>

@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% include 'styles.html' %}
     <style>
         body {
             background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),
@@ -23,6 +23,9 @@
 </head>
 
 <body>
+    <!-- Global Navbar -->
+    {% include 'navbar.html' %}
+
     <div class="main-wrapper" style="padding-top: 2rem;">
 
         <div class="text-center mb-5">
@@ -59,6 +62,40 @@
                     </div>
                 </div>
 
+                <!-- Innovation: Regional Identity (Multilingual) -->
+                {% if translations %}
+                <div class="card mb-4 shadow-sm border-0"
+                    style="border-radius: 15px; background: linear-gradient(135deg, #FFF3E0, #FFE0B2);">
+                    <div class="card-body">
+                        <h5 class="text-warning fw-bold mb-3" style="color: #E65100 !important;"><i
+                                class="fas fa-globe-asia me-2"></i>Regional Identity</h5>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="p-2 bg-white rounded shadow-sm">
+                                    <small class="text-muted d-block uppercase fw-bold"
+                                        style="font-size: 0.7rem;">TAMIL</small>
+                                    <span class="fs-5 fw-bold text-dark">{{ translations.get('Tamil', 'N/A') }}</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 bg-white rounded shadow-sm">
+                                    <small class="text-muted d-block uppercase fw-bold"
+                                        style="font-size: 0.7rem;">HINDI</small>
+                                    <span class="fs-5 fw-bold text-dark">{{ translations.get('Hindi', 'N/A') }}</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 bg-white rounded shadow-sm">
+                                    <small class="text-muted d-block uppercase fw-bold"
+                                        style="font-size: 0.7rem;">TELUGU</small>
+                                    <span class="fs-5 fw-bold text-dark">{{ translations.get('Telugu', 'N/A') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Common Names -->
                 {% if common_names %}
                 <div class="card mb-4 shadow-sm border-0" style="border-radius: 12px;">
@@ -73,76 +110,260 @@
                 </div>
                 {% endif %}
 
-                <!-- Details Grid -->
-                <div class="row g-4">
-                    {% if medicinal_properties %}
-                    <div class="col-12">
-                        <div class="card h-100 border-0 shadow-sm" style="border-left: 5px solid #4CAF50;">
-                            <div class="card-body">
-                                <h5 class="text-success fw-bold mb-3"><i class="fas fa-notes-medical me-2"></i>Medicinal
-                                    Properties</h5>
-                                <p class="text-muted mb-0">{{ medicinal_properties }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
+                <p class="text-dark mb-4">Consult our AI Ayurvedic Specialist to know if <strong>{{ plant_name
+                        }}</strong> helps with your specific symptoms.</p>
 
-                    {% if growing_conditions %}
-                    <div class="col-md-6">
-                        <div class="card h-100 border-0 shadow-sm" style="border-left: 5px solid #2E7D32;">
-                            <div class="card-body">
-                                <h5 class="text-success fw-bold mb-3"><i class="fas fa-seedling me-2"></i>Growing
-                                    Conditions</h5>
-                                <p class="text-muted mb-0">{{ growing_conditions }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if harvesting_guidelines %}
-                    <div class="col-md-6">
-                        <div class="card h-100 border-0 shadow-sm" style="border-left: 5px solid #8BC34A;">
-                            <div class="card-body">
-                                <h5 class="text-success fw-bold mb-3"><i class="fas fa-sickle me-2"></i>Harvesting</h5>
-                                <p class="text-muted mb-0">{{ harvesting_guidelines }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if precautions %}
-                    <div class="col-12">
-                        <div class="card h-100 border-0 shadow-sm" style="border-left: 5px solid #ff9800;">
-                            <div class="card-body">
-                                <h5 class="text-warning fw-bold mb-3"><i
-                                        class="fas fa-exclamation-triangle me-2"></i>Precautions</h5>
-                                <p class="text-muted mb-0">{{ precautions }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-
-                {% else %}
-                <div class="alert alert-warning shadow-sm border-0">
-                    <h4 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>No Match Found</h4>
-                    <p>We couldn't identify the plant in the uploaded image. Please try again with a clearer image or a
-                        different angle.</p>
-                </div>
+                <form action="{{ url_for('doctor') }}" method="POST">
+                    <input type="hidden" name="plant_name" value="{{ plant_name }}">
+                    <input type="hidden" name="medicinal_properties" value="{{ medicinal_properties }}">
+                    <button type="submit" class="btn btn-success btn-lg rounded-pill px-5 fw-bold shadow">
+                        <i class="fas fa-stethoscope me-2"></i> Consult Now
+                    </button>
+                </form>
                 {% endif %}
+            </div>
+        </div>
 
-                <div class="text-center mt-5 mb-5">
-                    <a href="{{ url_for('home') }}" class="btn btn-secondary rounded-pill px-4 py-2 me-3 fw-bold">
-                        <i class="fas fa-home me-2"></i> Back to Home
-                    </a>
-                    <a href="{{ url_for('upload_file') }}" class="btn btn-primary rounded-pill px-4 py-2 fw-bold"
-                        style="background: var(--primary); border: none;">
-                        <i class="fas fa-camera me-2"></i> Check Another Plant
-                    </a>
+    </div>
+    </div>
+    </div>
+
+    <!-- Innovation Scripts -->
+    <!-- Innovation Scripts -->
+    {% if plant_name %}
+    <script>
+        // Voice Assistant Logic
+        function speakPlantDetails() {
+            const plantName = {{ plant_name | tojson
+        }};
+        const properties = {{ medicinal_properties | tojson }};
+
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const text = `This is ${plantName}. Its medicinal properties include: ${properties}`;
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        // Optional: Select a voice
+        const voices = window.speechSynthesis.getVoices();
+        // Try to find a clear English voice, usually the first one is fine but let's be safe
+        utterance.voice = voices.find(voice => voice.lang.includes('en')) || voices[0];
+
+        utterance.rate = 0.9; // Slightly slower for clarity
+        utterance.pitch = 1;
+
+        window.speechSynthesis.speak(utterance);
+        }
+    </script>
+
+    <!-- Innovation: GenAI Chatbot Widget -->
+    <div id="chat-widget-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <!-- Chat Button -->
+        <button id="chat-toggle-btn"
+            class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center"
+            style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; transition: transform 0.3s;">
+            <i class="fas fa-robot fa-2x text-white"></i>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chat-window" class="card shadow-lg border-0 d-none"
+            style="width: 350px; height: 500px; position: absolute; bottom: 80px; right: 0; border-radius: 20px; overflow: hidden; animation: slideIn 0.3s ease;">
+
+            <!-- Header -->
+            <div class="card-header text-white p-3 d-flex justify-content-between align-items-center"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="bg-white rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 35px; height: 35px;">
+                        <i class="fas fa-robot text-primary"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">Plant AI</h6>
+                        <small class="opacity-75" style="font-size: 0.7rem;">Only for {{ plant_name }}</small>
+                    </div>
+                </div>
+                <button id="chat-close-btn" class="btn btn-sm btn-link text-white text-decoration-none">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Chat Body -->
+            <div id="chat-messages" class="card-body bg-light p-3"
+                style="overflow-y: auto; height: 380px; scroll-behavior: smooth;">
+                <div class="d-flex flex-column gap-3">
+                    <!-- Intro Message -->
+                    <div class="align-self-start bg-white p-3 rounded-bottom rounded-end shadow-sm"
+                        style="max-width: 85%; border-top-left-radius: 5px;">
+                        <p class="mb-1 text-dark">Hello! I am your AI assistant for <strong>{{ plant_name }}</strong>.
+                            🌱</p>
+                        <p class="mb-0 text-muted small">Ask me about my benefits, how to grow me, or my precautions!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="card-footer bg-white p-2 border-top">
+                <div class="input-group">
+                    <input type="text" id="chat-input" class="form-control border-0 bg-light rounded-pill px-3"
+                        placeholder="Ask a question..." style="box-shadow: none;">
+                    <button id="chat-send-btn"
+                        class="btn btn-primary rounded-circle ms-2 d-flex align-items-center justify-content-center"
+                        style="width: 40px; height: 40px; background: #667eea; border: none;">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // --- GenAI Chatbot Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('chat-toggle-btn');
+            const closeBtn = document.getElementById('chat-close-btn');
+            const chatWindow = document.getElementById('chat-window');
+            const sendBtn = document.getElementById('chat-send-btn');
+            const inputField = document.getElementById('chat-input');
+            const messagesContainer = document.getElementById('chat-messages');
+
+            // Plant Context (Dynamic Data from DB)
+            const plantContext = {
+                name: ({{ plant_name | tojson
+        }} || "Unknown Plant"),
+            scientific: ({{ scientific_name | tojson }} || "Unknown"),
+        medicinal: ({{ medicinal_properties | tojson }} || "Information not available").toLowerCase(),
+            growing: ({{ growing_conditions | tojson }} || "Information not available").toLowerCase(),
+                harvesting: ({{ harvesting_guidelines | tojson }} || "Information not available").toLowerCase(),
+                    precautions: ({{ precautions | tojson }} || "Information not available").toLowerCase()
+            };
+
+        // Toggle Chat
+        toggleBtn.addEventListener('click', () => chatWindow.classList.toggle('d-none'));
+        closeBtn.addEventListener('click', () => chatWindow.classList.add('d-none'));
+
+        // Send Message
+        function sendMessage() {
+            const query = inputField.value.trim();
+            if (!query) return;
+
+            // User Message
+            appendMessage(query, 'user');
+            inputField.value = '';
+
+            // Simulate AI Delay
+            showTypingIndicator();
+            setTimeout(() => {
+                removeTypingIndicator();
+                const response = generateAIResponse(query);
+                appendMessage(response, 'bot');
+            }, 800 + Math.random() * 500); // Random delay 0.8s - 1.3s
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        inputField.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function appendMessage(text, sender) {
+            const div = document.createElement('div');
+            const isUser = sender === 'user';
+
+            div.className = `p-3 shadow-sm ${isUser ? 'align-self-end text-white' : 'align-self-start bg-white text-dark'}`;
+            div.style.maxWidth = '85%';
+            div.style.borderRadius = '15px';
+
+            if (isUser) {
+                div.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                div.style.borderBottomRightRadius = '2px';
+            } else {
+                div.style.borderBottomLeftRadius = '2px';
+            }
+
+            div.innerHTML = `<p class="mb-0">${text}</p>`;
+            messagesContainer.querySelector('.d-flex').appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const div = document.createElement('div');
+            div.id = 'typing-indicator';
+            div.className = 'align-self-start bg-white p-3 rounded shadow-sm';
+            div.style.maxWidth = '85%';
+            div.style.borderRadius = '15px';
+            div.style.borderBottomLeftRadius = '2px';
+            div.innerHTML = `<small class="text-muted"><i class="fas fa-circle-notch fa-spin me-2"></i>Thinking...</small>`;
+            messagesContainer.querySelector('.d-flex').appendChild(div);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+
+        // --- The "Brain" (Rule-based NLP) ---
+        function generateAIResponse(query) {
+            query = query.toLowerCase();
+
+            // 1. Greetings
+            if (query.match(/^(hi|hello|hey|greetings)/)) {
+                return `Hello! Ask me properly about <strong>${plantContext.name}</strong>.`;
+            }
+
+            // 2. Identification
+            if (query.includes('name') || query.includes('who are you') || query.includes('what is this')) {
+                return `I am identified as <strong>${plantContext.name}</strong> (<em>${plantContext.scientific}</em>).`;
+            }
+
+            // 3. Medicinal / Benefits (Priority)
+            if (query.match(/(cure|treat|health|benefit|good for|medic|illness|disease|usage|use)/)) {
+                return `<strong>Medicinal Benefits:</strong><br>${formatResponse(plantContext.medicinal)}`;
+            }
+
+            // 4. Growing / Soil / Water
+            if (query.match(/(grow|soil|water|sun|light|plant|garden|farm|cultivat)/)) {
+                return `<strong>Growing Guide:</strong><br>${formatResponse(plantContext.growing)}`;
+            }
+
+            // 5. Precautions / Safety
+            if (query.match(/(safe|danger|toxic|poison|side effect|pregnant|child|eat|edible)/)) {
+                return `<strong>Safety First:</strong><br>${formatResponse(plantContext.precautions)}`;
+            }
+
+            // 6. Harvesting
+            if (query.match(/(harvest|cut|pick|collect|store|dry)/)) {
+                return `<strong>Harvesting Tips:</strong><br>${formatResponse(plantContext.harvesting)}`;
+            }
+
+            // Fallback
+            return `I'm specific to ${plantContext.name}. Try asking: "What are the benefits?", "How do I grow this?", or "Is it safe?"`;
+        }
+
+        function formatResponse(text) {
+            // Capitalize first letter and truncate if too long (simulate summary)
+            if (text.length > 300) return text.substring(0, 300) + "...";
+            return text.charAt(0).toUpperCase() + text.slice(1);
+        }
+        });
+    </script>
+    {% endif %}
+    {% if translations %}
+    <style>
+        /* Animation for Chat Window */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
